@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-//import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { collection, addDoc } from "firebase/firestore";
 import { db, storage } from "../firebase";
@@ -19,18 +18,20 @@ function NewProductForm() {
   };
 
   const uploadFile = () => {
-    const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
-    uploadBytes(imageRef, imageUpload).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        setImageUrl(url);
+    if (imageUpload) {
+      const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
+      return uploadBytes(imageRef, imageUpload).then((snapshot) => {
+        return getDownloadURL(snapshot.ref).then((url) => {
+          setImageUrl(url);
+          return url;
+        });
       });
-    });
+    }
   };
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     setImageUpload(file);
-    uploadFile();
   };
 
   const handleSubmit = async (e) => {
@@ -50,20 +51,18 @@ function NewProductForm() {
     }
 
     // Upload image to Firebase Storage
-    //let imageUrl = null;
-    if (imageUpload) {
-      uploadFile();
-    }
-
-    // Add product to Firestore
     try {
+      const imageUrl = await uploadFile();
+
+      // Add product to Firestore
       const docRef = await addDoc(collection(db, "products"), {
+        id: v4(),
         name: productName,
         price: productPrice,
         category: productCategory,
         imageUrl: imageUrl,
       });
-      console.log("Document written with ID: ", docRef.id);
+      window.alert("Product Added!");
     } catch (e) {
       console.error("Error adding document: ", e);
     }

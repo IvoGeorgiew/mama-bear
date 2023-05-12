@@ -3,8 +3,8 @@ import { Badge, Box, IconButton } from "@mui/material";
 import {
   PersonOutline,
   ShoppingBagOutlined,
-  MenuOpenOutlined,
-  SearchOffOutlined,
+  // MenuOpenOutlined,
+  // SearchOffOutlined,
   SearchOutlined,
   MenuOutlined,
 } from "@mui/icons-material";
