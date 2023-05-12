@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { collection, addDoc } from "firebase/firestore";
 import { db, storage } from "../firebase";
 import { v4 } from "uuid";
 
@@ -12,6 +11,7 @@ function NewProductForm() {
   const [productCategory, setProductCategory] = useState("Mama");
   const [imageUpload, setImageUpload] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
+  const [productDescription, setProductDescription] = useState("");
 
   const handleCategoryChange = (event) => {
     setProductCategory(event.target.value);
@@ -42,7 +42,12 @@ function NewProductForm() {
       window.alert("No image selected.");
       return;
     }
-    let fields = [productName, productPrice, productCategory];
+    let fields = [
+      productName,
+      productPrice,
+      productCategory,
+      productDescription,
+    ];
     for (let i = 0; i < fields.length; i++) {
       if (fields[i].length < 1) {
         window.alert("Fields cannot be empty.");
@@ -55,14 +60,30 @@ function NewProductForm() {
       const imageUrl = await uploadFile();
 
       // Add product to Firestore
-      const docRef = await addDoc(collection(db, "products"), {
-        id: v4(),
-        name: productName,
-        price: productPrice,
-        category: productCategory,
-        imageUrl: imageUrl,
-      });
-      window.alert("Product Added!");
+      // const docRef = await setDoc(collection(db, "products"), {
+      //   id: v4(),
+      //   name: productName,
+      //   price: productPrice,
+      //   category: productCategory,
+      //   description: productDescription,
+      //   imageUrl: imageUrl,
+      // });
+      // window.alert("Product Added!");
+      db.collection("products")
+        .doc(v4())
+        .set({
+          name: productName,
+          price: productPrice,
+          category: productCategory,
+          description: productDescription,
+          imageUrl: imageUrl,
+        })
+        .then(() => {
+          console.log("Document successfully written!");
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -73,15 +94,16 @@ function NewProductForm() {
       <h1>Add new Product here:</h1>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <label>
-          Name:
+          Име:
           <InputStyle
             type="text"
             value={productName}
             onChange={(e) => setProductName(e.target.value)}
           />
         </label>
+
         <label>
-          Price:
+          Цена:
           <InputStyle
             type="text"
             value={productPrice}
@@ -89,7 +111,7 @@ function NewProductForm() {
           />
         </label>
         <label>
-          Category:
+          Категория:
           <SelectStyle value={productCategory} onChange={handleCategoryChange}>
             <option value="Mama">Mama</option>
             <option value="Bebe">Bebe</option>
@@ -97,10 +119,21 @@ function NewProductForm() {
           </SelectStyle>
         </label>
         <label>
-          Image:
+          Описание:
+          <textarea
+            id="my-textarea"
+            name="message"
+            rows="4"
+            cols="50"
+            value={productDescription}
+            onChange={(e) => setProductDescription(e.target.value)}
+          />
+        </label>
+        <label>
+          Снимка:
           <InputStyle type="file" onChange={handleImageChange} />
         </label>
-        <ButtonStyle>Add</ButtonStyle>
+        <ButtonStyle>Добави</ButtonStyle>
       </div>
     </FormStyle>
   );

@@ -43,7 +43,7 @@ function Navbar() {
           sx={{ "&:hover": { cursor: "pointer" } }}
           color={shades.secondary[500]}
         >
-          ECOMMER
+          MAMA BEAR
         </Box>
         <Box
           display="flex"
