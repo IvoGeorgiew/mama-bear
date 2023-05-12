@@ -1,5 +1,5 @@
 import React from "react";
-import NewProductForm from "../Components/NewProductForm";
+import NewProductForm from "../../Components/NewProductForm";
 
 function AdminPage() {
   return (

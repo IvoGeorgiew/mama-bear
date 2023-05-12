@@ -37,6 +37,10 @@ function NewProductForm() {
     e.preventDefault();
 
     // Checks for empty fields
+    if (imageUpload === null) {
+      window.alert("No image selected.");
+      return;
+    }
     let fields = [productName, productPrice, productCategory];
     for (let i = 0; i < fields.length; i++) {
       if (fields[i].length < 1) {
