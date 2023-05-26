@@ -55,20 +55,8 @@ function NewProductForm() {
       }
     }
 
-    // Upload image to Firebase Storage
     try {
       const imageUrl = await uploadFile();
-
-      // Add product to Firestore
-      // const docRef = await setDoc(collection(db, "products"), {
-      //   id: v4(),
-      //   name: productName,
-      //   price: productPrice,
-      //   category: productCategory,
-      //   description: productDescription,
-      //   imageUrl: imageUrl,
-      // });
-      // window.alert("Product Added!");
       db.collection("products")
         .doc(v4())
         .set({

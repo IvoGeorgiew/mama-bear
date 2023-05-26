@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { IconButton, Box, Typography, useTheme, Button } from "@mui/material";
+import { IconButton, Box, Typography, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { shades } from "../theme";
@@ -12,26 +12,9 @@ const Item = ({ item, width }) => {
   const dispatch = useDispatch();
   const [count, setCount] = useState(1);
   const [isHovered, setIsHovered] = useState(false);
-  const {
-    palette: { neutral },
-  } = useTheme();
 
-  //const { category, price, name, image } = item;
-  const id = item.id;
-  const category = item.category;
   const price = item.price;
   const name = item.name;
-  const image = item.imageUrl;
-
-  //   const {
-  //     data: {
-  //       attributes: {
-  //         formats: {
-  //           medium: { url },
-  //         },
-  //       },
-  //     },
-  //   } = image;
 
   return (
     <Box width={width}>
@@ -40,14 +23,30 @@ const Item = ({ item, width }) => {
         onMouseOver={() => setIsHovered(true)}
         onMouseOut={() => setIsHovered(false)}
       >
-        <img
-          alt={item.name}
-          width="300px"
-          height="400px"
-          src={item.imageUrl}
+        <div
           onClick={() => navigate(`/item/${item.id}`)}
-          style={{ cursor: "pointer" }}
-        />
+          style={{
+            width: "300px",
+            height: "400px",
+            margin: "0 auto",
+            overflow: "hidden",
+            cursor: "pointer",
+          }}
+        >
+          <img
+            alt={item.name}
+            src={item.imageUrl}
+            style={{
+              width: "auto",
+              height: "100%",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
+              transform: isHovered ? "scale(1.2)" : "scale(1)",
+              transition: "transform 0.3s ease-in-out",
+            }}
+          />
+        </div>
         <Box
           display={isHovered ? "block" : "none"}
           position="absolute"
