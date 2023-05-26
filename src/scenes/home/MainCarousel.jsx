@@ -81,7 +81,7 @@ const MainCarousel = () => {
             maxWidth={isNonMobile ? undefined : "240px"}
           >
             <Typography color={shades.secondary[200]}>Нови Продукти</Typography>
-            <Typography variant="h1">ЗА МАЙКАТА</Typography>
+            <Typography variant="h1">Избрани продукти</Typography>
             <Typography
               fontWeight="bold"
               fontSize="20"

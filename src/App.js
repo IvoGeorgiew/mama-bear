@@ -7,6 +7,7 @@ import Confirmation from "./scenes/checkout/Confirmation";
 import Navbar from "./scenes/global/Navbar";
 import CartMenu from "./scenes/global/CartMenu";
 import NewProductForm from "./components/NewProductForm";
+import Footer from "./scenes/global/Footer";
 const ScrollToTop = () => {
   const { pathname } = useLocation();
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="admin" element={<NewProductForm />} />
         </Routes>
         <CartMenu />
+        <Footer />
       </BrowserRouter>
     </div>
   );
