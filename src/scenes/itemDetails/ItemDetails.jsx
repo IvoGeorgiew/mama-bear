@@ -10,7 +10,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { shades } from "../../theme";
 import { addToCart } from "../../state";
 import { useDispatch } from "react-redux";
-import { collection, getDoc, doc } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase";
 
 const ItemDetails = () => {
@@ -19,49 +19,47 @@ const ItemDetails = () => {
   const [value, setValue] = useState("description");
   const [count, setCount] = useState(1);
   const [item, setItem] = useState(null);
-  //const [items, setItems] = useState([]);
+  const [items, setItems] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  // async function getItem() {
-  //   const item = await fetch(
-  //     `http://localhost:2000/api/items/${itemId}?populate=image`,
-  //     {
-  //       method: "GET",
-  //     }
-  //   );
-  //   const itemJson = await item.json();
-  //   setItem(itemJson.data);
-  // }
-
-  // async function getItems() {
-  //   const items = await fetch(
-  //     `http://localhost:2000/api/items?populate=image`,
-  //     {
-  //       method: "GET",
-  //     }
-  //   );
-  //   const itemsJson = await items.json();
-  //   setItems(itemsJson.data);
-  // }
   const getItem = async () => {
     const docRef = doc(db, "products", itemId);
     const docSnap = await getDoc(docRef);
-
     if (docSnap.exists()) {
       const product = docSnap.data();
-      dispatch(setItem(product));
-      console.log(product);
+      setItem(product);
+      return product;
     } else {
       console.log("No such document!");
+      return null;
     }
   };
+
+  const getItems = async () => {
+    const fetchedItem = await getItem();
+    if (fetchedItem) {
+      db.collection("products")
+        .where("category", "==", fetchedItem.category)
+        .get()
+        .then((querySnapshot) => {
+          const relatedItems = [];
+          querySnapshot.forEach((doc) => {
+            relatedItems.push(doc.data());
+          });
+          console.log(relatedItems);
+          setItems(relatedItems);
+        })
+        .catch((error) => {
+          console.log("Error getting documents: ", error);
+        });
+    }
+  };
+
   useEffect(() => {
-    console.log(itemId, "@@@@");
-    getItem();
-    //getItems();
+    getItems();
   }, [itemId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -80,11 +78,6 @@ const ItemDetails = () => {
 
         {/* ACTIONS */}
         <Box flex="1 1 50%" mb="40px">
-          <Box display="flex" justifyContent="space-between">
-            <Box>Home/Item</Box>
-            <Box>Prev Next</Box>
-          </Box>
-
           <Box m="65px 0 25px 0">
             <Typography variant="h3">{item?.name}</Typography>
             <Typography>${item?.price}</Typography>
@@ -142,7 +135,7 @@ const ItemDetails = () => {
         <Typography variant="h3" fontWeight="bold">
           Related Products
         </Typography>
-        {/* <Box
+        <Box
           mt="20px"
           display="flex"
           flexWrap="wrap"
@@ -152,7 +145,7 @@ const ItemDetails = () => {
           {items.slice(0, 4).map((item, i) => (
             <Item key={`${item.name}-${i}`} item={item} />
           ))}
-        </Box> */}
+        </Box>
       </Box>
     </Box>
   );
