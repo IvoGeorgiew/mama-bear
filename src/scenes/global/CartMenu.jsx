@@ -52,7 +52,7 @@ const CartMenu = () => {
         <Box padding="30px" overflow="auto" height="100%">
           {/* HEADER */}
           <FlexBox mb="15px">
-            <Typography variant="h3">КОЛИЧКА({cart.length})</Typography>
+            <Typography variant="h3">КОШНИЦА({cart.length})</Typography>
             <IconButton onClick={() => dispatch(setIsCartOpen({}))}>
               <CloseIcon />
             </IconButton>
