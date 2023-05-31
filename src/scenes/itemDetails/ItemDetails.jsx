@@ -48,7 +48,6 @@ const ItemDetails = () => {
           querySnapshot.forEach((doc) => {
             relatedItems.push(doc.data());
           });
-          console.log(relatedItems);
           setItems(relatedItems);
         })
         .catch((error) => {

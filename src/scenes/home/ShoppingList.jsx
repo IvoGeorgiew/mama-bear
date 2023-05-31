@@ -39,7 +39,6 @@ const ShoppingList = () => {
       products.push(product);
     });
     dispatch(setItems(products));
-    console.log(products);
   };
 
   useEffect(() => {

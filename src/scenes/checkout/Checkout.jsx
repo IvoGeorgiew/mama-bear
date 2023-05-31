@@ -1,9 +1,15 @@
 import React, { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik, Field, Form } from "formik";
 import { Box, Typography, Button } from "@mui/material";
-import { decreaseCount, increaseCount, removeFromCart } from "../../state";
+import {
+  decreaseCount,
+  increaseCount,
+  removeFromCart,
+  clearCart,
+} from "../../state";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -23,20 +29,43 @@ const CheckoutPage = () => {
   const totalPrice = cart.reduce((total, item) => {
     return total + item.count * item.price;
   }, 0);
-
+  const navigate = useNavigate();
   const form = useRef();
   const handleSubmit = (values) => {
     //e.preventDefault();
+    const deliveryOptionPrev = values.toOffice
+      ? "Доставка до Офис"
+      : "Доставка до Адрес";
+
+    const cartListString = cart
+      .map((item) => {
+        return `Продукт: ${item.name}, Количество: ${item.count}, Цена: ${item.price}лв.`;
+      })
+      .join("\n");
+
+    const newObject = {
+      name: values.name,
+      surname: values.surname,
+      city: values.city,
+      address: values.address,
+      number: values.number,
+      deliveryOption: deliveryOptionPrev,
+      cart: cartListString,
+      total: `${totalPrice}лв.`,
+    };
+
     emailjs
-      .sendForm(
+      .send(
         "service_c0pvbsv",
         "template_sbunqa9",
-        form.current,
+        newObject,
         "sbfdxGjjrHq18KY-k"
       )
       .then(
         (result) => {
           console.log(result.text);
+          dispatch(clearCart());
+          navigate("success");
         },
         (error) => {
           console.log(error.text);
@@ -124,7 +153,8 @@ const CheckoutPage = () => {
               surname: "",
               address: "",
               city: "",
-              toOffice: false,
+              number: "",
+              toOffice: true,
             }}
             onSubmit={handleSubmit}
           >
@@ -235,7 +265,7 @@ const CheckoutPage = () => {
                       fontSize: "24px",
                     }}
                     onClick={() => {
-                      // Handle back button action, e.g., redirecting to Home
+                      navigate("/");
                     }}
                   >
                     Назад
